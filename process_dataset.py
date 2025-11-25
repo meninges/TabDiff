@@ -458,27 +458,28 @@ def process_data(name):
 
     col_info = {}
     
+    #this section wasn't actually adding to the dict with type in info file before, now the numbers are visible
     for col_idx in num_col_idx:
         col_info[col_idx] = {}
-        col_info['type'] = 'numerical'
-        col_info['max'] = float(train_df[col_idx].max())
-        col_info['min'] = float(train_df[col_idx].min())
+        col_info[col_idx]['type'] = 'numerical'
+        col_info[col_idx]['max'] = float(train_df[col_idx].max())
+        col_info[col_idx]['min'] = float(train_df[col_idx].min())
      
     for col_idx in cat_col_idx:
         col_info[col_idx] = {}
-        col_info['type'] = 'categorical'
-        col_info['categorizes'] = list(set(train_df[col_idx]))    
+        col_info[col_idx]['type'] = 'categorical'
+        col_info[col_idx]['categorizes'] = list(set(train_df[col_idx]))    
 
     for col_idx in target_col_idx:
         if info['task_type'] == 'regression':
             col_info[col_idx] = {}
-            col_info['type'] = 'numerical'
-            col_info['max'] = float(train_df[col_idx].max())
-            col_info['min'] = float(train_df[col_idx].min())
+            col_info[col_idx]['type'] = 'numerical'
+            col_info[col_idx]['max'] = float(train_df[col_idx].max())
+            col_info[col_idx]['min'] = float(train_df[col_idx].min())
         else:
             col_info[col_idx] = {}
-            col_info['type'] = 'categorical'
-            col_info['categorizes'] = list(set(train_df[col_idx]))      
+            col_info[col_idx]['type'] = 'categorical'
+            col_info[col_idx]['categorizes'] = list(set(train_df[col_idx]))      
 
     info['column_info'] = col_info
 
