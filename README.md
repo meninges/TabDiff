@@ -176,6 +176,11 @@ You can then evaluate the imputation quality by running
 python eval_impute.py --dataname <NAME_OF_DATASET>
 ```
 
+FORK ADDITION: DCR test can now be run on imputation data with:
+```
+python dcr_imputation_eval.py --dataname <NAME_OF_DATASET>
+```
+
 ## License
 
 This work is licensed undeer the MIT License.
