@@ -120,8 +120,8 @@ def update_ema(target_params, source_params, rate=0.999):
 
 def concat_y_to_X(X, y):
     if X is None:
-        return y.reshape(-1, 1)
-    return np.concatenate([y.reshape(-1, 1), X], axis=1)
+        return (y.reshape(-1, 1) if y.ndim == 1 else y) #if there are multiple target columns and y is an array, reshaping creates an error
+    return (np.concatenate([y.reshape(-1, 1), X], axis=1) if y.ndim == 1 else np.concatenate([y, X], axis=1)) 
 
 
 def make_dataset(
