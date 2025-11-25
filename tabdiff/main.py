@@ -174,13 +174,13 @@ def main(args):
                     num_numerical=main_model_configs['unimodmlp_params']['d_numerical'], 
                     **main_model_configs['diffusion_params']['noise_schedule_params']
                 )
-                raw_config['diffusion_params']['noise_schedule_params']['rho'] = noise_schedule.rho()[0].item()    # the target col is placed at the first position
+                raw_config['diffusion_params']['noise_schedule_params']['rho'] = [noise_schedule.rho()[i].item() for i in list(range(len(info['target_col_idx'])))]    # edited to deal with multiple target cols 
             else:
                 noise_schedule = LogLinearNoise_PerColumn(
                     num_categories=len(main_model_configs['unimodmlp_params']['categories']), 
                     **main_model_configs['diffusion_params']['noise_schedule_params']
                 )
-                raw_config['diffusion_params']['noise_schedule_params']['k'] = noise_schedule.k()[0].item()    # the target col is placed at the first position
+                raw_config['diffusion_params']['noise_schedule_params']['k'] = [noise_schedule.k()[i].item() for i in list(range(len(info['target_col_idx'])))]    # edited to deal with multiple target cols
             
     backbone = UniModMLP(
         **raw_config['unimodmlp_params']
