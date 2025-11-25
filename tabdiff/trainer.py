@@ -58,7 +58,7 @@ class Trainer:
         self.optimizer = torch.optim.AdamW(self.diffusion.parameters(), lr=lr, weight_decay=weight_decay)
         self.ema_decay = ema_decay
         self.lr_scheduler = lr_scheduler
-        self.scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=factor, patience=reduce_lr_patience, verbose=True)
+        self.scheduler = ReduceLROnPlateau(self.optimizer, mode='min', factor=factor, patience=reduce_lr_patience) # verbose term is deprecated
         self.closs_weight_schedule = closs_weight_schedule
         self.c_lambda = c_lambda
         self.d_lambda = d_lambda
@@ -474,7 +474,8 @@ class Trainer:
             else:
                 syn_data = num_inverse(syn_data)
             syn_df = pd.DataFrame()
-            syn_df[info['column_names'][info['target_col_idx'][0]]] = syn_data[:, 0]
+            for i in list(range(len(info['target_col_idx']))):
+                syn_df[info['column_names'][info['target_col_idx'][i]]] = syn_data[:, i] #changed for multiple column imputation
         else:
             syn_num, syn_cat, syn_target = split_num_cat_target(syn_data, info, num_inverse, int_inverse, cat_inverse) 
             syn_df = recover_data(syn_num, syn_cat, syn_target, info)
@@ -520,9 +521,9 @@ class Trainer:
         x_num_train, x_cat_train = X_train[:,:d_numerical], X_train[:,d_numerical:]
         
         if task_type == 'binclass':    # for cat cols, push the masked col to [MASK]
-            cat_mask_idx += [0]
+            cat_mask_idx += list(range(len(info['target_col_idx']))) # removed hardcoding to 0
         else:      # for num cols, set the masked col to the col mean
-            num_mask_idx += [0]
+            num_mask_idx += list(range(len(info['target_col_idx']))) # removed hardcoding to 0
             avg = x_num_train[:, num_mask_idx].mean(0).to(self.device)
         
         with torch.no_grad():
