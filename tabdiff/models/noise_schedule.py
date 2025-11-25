@@ -57,7 +57,7 @@ class PowerMeanNoise(Noise):
     
   def rho(self):
     # Return the softplus-transformed rho for all num_numerical values
-    return torch.tensor(self.raw_rho)
+    return torch.tensor(self.raw_rho, device=torch.device("cuda")) #fix for error about rho not being on same device
 
   def total_noise(self, t):
     sigma = (self.sigma_min ** (1/self.rho()) + t * (
