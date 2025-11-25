@@ -41,9 +41,9 @@ class TabMetrics(object):
 
         info = deepcopy(self.info)
         
-        y_only = len(syn_data.columns)==1
+        y_only = len(syn_data.columns)<= len(real_data.columns) #general fix for y_only only being true if one target column
         if y_only:
-            target_col_idx = info['target_col_idx'][0]
+            target_col_idx = info['target_col_idx'] #removing hardcoding for one column
             syn_data = self.complete_y_only_data(syn_data, real_data, target_col_idx)
 
         metadata = info['metadata']
@@ -249,18 +249,21 @@ class TabMetrics(object):
         syn_data_cp = deepcopy(syn_data)
         real_data = pd.read_csv(self.real_data_path)
         info = deepcopy(self.info)
-        y_only = len(syn_data_cp.columns)==1
+        y_only = len(syn_data_cp.columns)<= len(real_data.columns) #general fix for y_only only being true if one target column
         if y_only:
-            target_col_idx = info['target_col_idx'][0]
-            target_col_name = info['column_names'][target_col_idx]
+            target_col_idx = info['target_col_idx']
+            target_col_name = [info['column_names'][i] for i in target_col_idx] #fixing hardcoding for one column
             syn_data_cp = self.complete_y_only_data(syn_data_cp, real_data, target_col_name)
         img = plot_density(syn_data_cp, real_data, info)
         return img
     
     def complete_y_only_data(self, syn_data, real_data, target_col_idx):
-        syn_target_col = deepcopy(syn_data.iloc[:, 0])
-        syn_data = deepcopy(real_data)
-        syn_data[target_col_idx] = syn_target_col
+        #rewritten to deal with target_col_idx as a list
+        new_syn_data = deepcopy(real_data)
+        for i in list(range(len(target_col_idx))):
+            syn_target_col = deepcopy(syn_data.iloc[:, i])
+            new_syn_data[target_col_idx[i]] = syn_target_col
+        syn_data = new_syn_data
         return syn_data
         
 
