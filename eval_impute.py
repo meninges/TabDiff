@@ -37,7 +37,7 @@ task_type = info['task_type']
 encoder = OneHotEncoder()
 
 real_data = pd.read_csv(real_path)
-target_col = real_data.columns[info['target_col_idx'][0]]
+target_col = [real_data.columns[i] for i in info['target_col_idx']] #removed hardcoding for one target column
 
 if task_type == "binclass":
     real_target = real_data[target_col].to_numpy().reshape(-1,1)
