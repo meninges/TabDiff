@@ -13,6 +13,8 @@ dataname = args.dataname
 
 if dataname is None:
     raise ValueError("No dataname given, please provide the name of your dataset")
+elif not dataname.endswith("_dcr"):
+    raise ValueError("Dataset given is not a DCR set, please retrain with 50/50 split or rename appropriately!")
 
 info_path = f'data/{dataname}/info.json'
 with open(info_path, 'r') as f:
@@ -81,11 +83,9 @@ real_data_th = torch.tensor(real_data_np).to(device)
 syn_data_th = torch.tensor(syn_data_np).to(device)  
 test_data_th = torch.tensor(test_data_np).to(device)
 
-length = num_real_data.shape[1] if info["task_type"] == "regression" else cat_real_data_oh.shape[1]
-
 dcrs_real = []
 dcrs_test = []
-batch_size = 10000 // length   # This esitmation should make sure that dcr_real and dcr_test can be fit into 10GB GPU memory
+batch_size = 10000 // max(cat_real_data_oh.shape[1], 1)   # This esitmation should make sure that dcr_real and dcr_test can be fit into 10GB GPU memory
 
 for i in range((syn_data_th.shape[0] // batch_size) + 1):
     if i != (syn_data_th.shape[0] // batch_size):

@@ -41,10 +41,11 @@ class TabMetrics(object):
 
         info = deepcopy(self.info)
         
-        y_only = len(syn_data.columns)<= len(real_data.columns) #general fix for y_only only being true if one target column
+        y_only = len(syn_data.columns) == len(info['target_col_idx']) #general fix for y_only only being true if one target column
         if y_only:
             target_col_idx = info['target_col_idx'] #removing hardcoding for one column
-            syn_data = self.complete_y_only_data(syn_data, real_data, target_col_idx)
+            target_col_name = [info['column_names'][i] for i in target_col_idx]
+            syn_data = self.complete_y_only_data(syn_data, real_data, target_col_name)
 
         metadata = info['metadata']
         metadata['columns'] = {int(key): value for key, value in metadata['columns'].items()} # ensure that keys are all integers?
@@ -249,7 +250,7 @@ class TabMetrics(object):
         syn_data_cp = deepcopy(syn_data)
         real_data = pd.read_csv(self.real_data_path)
         info = deepcopy(self.info)
-        y_only = len(syn_data_cp.columns)<= len(real_data.columns) #general fix for y_only only being true if one target column
+        y_only = len(syn_data_cp.columns) == len(info['target_col_idx']) #general fix for y_only only being true if one target column
         if y_only:
             target_col_idx = info['target_col_idx']
             target_col_name = [info['column_names'][i] for i in target_col_idx] #fixing hardcoding for one column
